@@ -1,33 +1,45 @@
-const express = require('express');
-const app = express();
-
+// ------------------------------------- //
 const weather = require('yahoo-weather');
+const express = require('express');
+const app     = express();
+// ------------------------------------- //
 
 
-app.use(express.static('public'));
+app.get('/', ( req, res ) => {
+  res.send('Hi, please try sending a GET request after adding a location.\nExample: https://niceweather.glitch.me/new%20york%20city.')
+});
 
-app.get('/', ( req, res ) => res.send('No') );
-
-app.get('/:location', function(request, response) {
-
-  let answer = new Object();
+app.get('/:location', (req, res) => {
   
-  weather( request.params.location, 'F' ).then(
+  weather( req.params.location, 'F' ).then(
   
-    info => {
-    
-      answer.location = info.location.city + ',' + info.location.region;
-      answer.weather  = info.item.condition.text;
-      answer.temp     = info.item.condition.temp;
-      answer.unit     = info.units.temperature;
+    ( data ) => {
       
-      response.send( answer );
-    
+      let send
+      res.send( buildWeatherObject(data) );
+      
     }
     
-  ).catch( error => response.send( error ) );
+  ).catch( (error) => {
+      
+      res.send( error );
+  
+  } );
 
 });
+
+function buildWeatherObject( data ){
+
+  let builtObject = {
+   location: data.location.city + ',' + info.location.region,
+   weather: data.item.condition.text,
+   temp: data.item.condition.temp,
+   unit: data.units.temperature
+  };
+  
+  return builtObject;
+  
+}
 
 
 const listener = app.listen(process.env.PORT, function() {
