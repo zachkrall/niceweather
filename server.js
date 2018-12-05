@@ -18,13 +18,16 @@ app.get('/:location', function(request, response) {
 
   let answer = new Object();
   
-  answer.request_name = request.params.location;
+  // answer.request_name = request.params.location;
   
   weather( request.params.location, 'F' ).then(
   
     info => {
     
-      answer.response = info;
+      answer.location = info.location.city + ',' + info.location.region;
+      answer.weather  = info.item.condition.text;
+      answer.temp     = info.item.condition.temp;
+      answer.unit     = info.units.temperature;
       
       response.send( answer );
     
