@@ -5,6 +5,8 @@
 const express = require('express');
 const app = express();
 
+const weather = require('yahoo-weather');
+
 // we've started you off with Express, 
 // but feel free to use whatever libs or frameworks you'd like through `package.json`.
 
@@ -12,8 +14,16 @@ const app = express();
 app.use(express.static('public'));
 
 // http://expressjs.com/en/starter/basic-routing.html
-app.get('/', function(request, response) {
-  response.sendFile(__dirname + '/views/index.html');
+app.get('/:location', function(request, response) {
+
+  let answer = new Object();
+  
+  answer.request_name = request.params.location;
+  
+  
+  
+  response.send( answer );
+
 });
 
 // listen for requests :)
