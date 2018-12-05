@@ -5,42 +5,46 @@ const app     = express();
 // ------------------------------------- //
 
 
-app.get('/', ( req, res ) => {
-  res.send('Hi, please try sending a GET request after adding a location.\nExample: https://niceweather.glitch.me/new%20york%20city.')
+//
+//  This is just because I didn't feel
+//  like writing a template file
+//
+
+app.get('/', function( req, res ){
+  res.send(`<html>
+<head>
+<title>Nice Weather</title>
+</head>
+<body>
+  <h1>Hello!</h1>
+  <p>Please try sending a GET request with a location.<br>Example: https://niceweather.glitch.me/new%20york%20city.</p>
+</body>
+</html>`);
 });
 
-app.get('/:location', (req, res) => {
+app.get('/:location', function(req, res){
   
   weather( req.params.location, 'F' ).then(
   
-    ( data ) => {
+    function( data ){
       
-      let send
-      res.send( buildWeatherObject(data) );
+      let niceWeather = {
+       location: data.location.city + ',' + data.location.region,
+       weather: data.item.condition.text,
+       temp: data.item.condition.temp,
+       unit: data.units.temperature
+      };
+      res.send( niceWeather );
       
     }
     
-  ).catch( (error) => {
+  ).catch( function(error){
       
-      res.send( error );
+      res.send(`Could not find weather for ${req.params.location}`);
   
   } );
 
 });
-
-function buildWeatherObject( data ){
-
-  let builtObject = {
-   location: data.location.city + ',' + info.location.region,
-   weather: data.item.condition.text,
-   temp: data.item.condition.temp,
-   unit: data.units.temperature
-  };
-  
-  return builtObject;
-  
-}
-
 
 const listener = app.listen(process.env.PORT, function() {
   console.log('Your app is listening on port ' + listener.address().port);
