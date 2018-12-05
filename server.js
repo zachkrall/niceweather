@@ -20,13 +20,17 @@ app.get('/:location', function(request, response) {
   
   answer.request_name = request.params.location;
   
-  weather( answer.request_name ).then(
+  weather( request.params.location ).then(
   
-    ( response ) => answer.response = response;
+    info => {
     
-  );
-  
-  response.send( answer );
+      answer.response = info;
+      
+      response.send( answer );
+    
+    }
+    
+  ).catch( error => response.send( error ) );
 
 });
 
